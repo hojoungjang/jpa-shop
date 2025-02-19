@@ -9,20 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ItemService {
     private final ItemRepository itemRepository;
 
-    public Long createItem(Item item) {
+    @Transactional
+    public Long saveItem(Item item) {
         return itemRepository.save(item);
     }
 
-    public List<Item> findAll() {
+    public List<Item> findItems() {
         return itemRepository.findAll();
     }
 
-    public Long updateItem(Item item) {
-
+    public Item findOne(Long itemId) {
+        return itemRepository.findOne(itemId);
     }
 }

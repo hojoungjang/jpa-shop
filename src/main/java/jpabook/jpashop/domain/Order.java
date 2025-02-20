@@ -81,7 +81,7 @@ public class Order {
     public int getTotalPrice() {
         int total = 0;
         for (OrderItem orderItem : orderItems) {
-            total += orderItem.getOrderPrice();
+            total += orderItem.getOrderPrice() * orderItem.getCount();
         }
         return total;
 

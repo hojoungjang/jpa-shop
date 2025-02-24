@@ -28,6 +28,12 @@ public class MemberService {
         }
     }
 
+    @Transactional
+    public void patch(Long id, String name) {
+        Member member = memberRepository.findOne(id);
+        member.setUsername(name);
+    }
+
     // 회원 전체 조회
 
     public List<Member> findMembers() {

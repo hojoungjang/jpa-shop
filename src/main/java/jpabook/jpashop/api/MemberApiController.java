@@ -9,6 +9,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberApiController {
@@ -27,6 +30,21 @@ public class MemberApiController {
 
         Long id = memberService.create(member);
         return new CreateMemberResponse(id);
+    }
+
+    @Data
+    public static class CreateMemberRequest {
+        @NotEmpty
+        private String name;
+    }
+
+    @Data
+    public static class CreateMemberResponse {
+        private Long id;
+
+        public CreateMemberResponse(Long id) {
+            this.id = id;
+        }
     }
 
     @PatchMapping("/api/v2/members/{id}")
@@ -50,18 +68,29 @@ public class MemberApiController {
         private String name;
     }
 
-    @Data
-    public static class CreateMemberRequest {
-        @NotEmpty
-        private String name;
+    @GetMapping("/api/v1/members")
+    public List<Member> getMembersV1() {
+        return memberService.findMembers();
+    }
+
+    @GetMapping("/api/v2/members")
+    public ResponseData getMembersV2() {
+        List<Member> members = memberService.findMembers();
+        List<MemberDto> collect = members.stream()
+                .map(m -> new MemberDto(m.getUsername()))
+                .toList();
+        return new ResponseData(collect);
     }
 
     @Data
-    public static class CreateMemberResponse {
-        private Long id;
+    @AllArgsConstructor
+    public static class ResponseData<T> {
+        private T data;
+    }
 
-        public CreateMemberResponse(Long id) {
-            this.id = id;
-        }
+    @Data
+    @AllArgsConstructor
+    public static class MemberDto {
+        private String name;
     }
 }

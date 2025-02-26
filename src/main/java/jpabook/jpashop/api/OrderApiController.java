@@ -1,6 +1,7 @@
 package jpabook.jpashop.api;
 
 import jpabook.jpashop.domain.*;
+import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.service.OrderService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderApiController {
     private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
     @GetMapping("/api/v1/orders")
     public List<Order> ordersV1() {
@@ -65,5 +67,11 @@ public class OrderApiController {
             this.orderPrice = orderItem.getOrderPrice();
             this.count = orderItem.getCount();
         }
+    }
+
+    @GetMapping("/api/v3/orders")
+    public List<OrderDto> ordersV3() {
+        List<Order> orders = orderRepository.findAllWithItems();
+        return orders.stream().map(OrderDto::new).toList();
     }
 }
